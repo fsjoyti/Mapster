@@ -2,8 +2,10 @@
  * Created by Anastasia on 7/22/2016.
  */
 var map;
+
 function initMap() {
     var markers = [];
+    var clustermarker = [];
     var mapOptions= {
         center: {lat: 37.791350, lng: -122.435883},
         zoom: 10,
@@ -11,7 +13,7 @@ function initMap() {
         scrollwheel:true, // unable to scroll through the map if set to false
         draggable:true,
         maxZoom:11,// set maximum zoom options
-        minZoom:9,//set minimum zoom options
+        minZoom:5,//set minimum zoom options
         zoomControlOptions:{
             position:google.maps.ControlPosition.LEFT_BOTTOM,
             style: google.maps.ZoomControlStyle.DEFAULT
@@ -25,10 +27,15 @@ function initMap() {
 
     };
     map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
+
+    var mcOptions = {gridSize: 50, maxZoom: 15, imagePath: 'm1.png'}
+
+   var mc = new MarkerClusterer(map, [], mcOptions);
     map.addListener('click',function(e){
         placeMarkerAndPanTo(e.latLng, map);
 
     });
+
 
     function placeMarkerAndPanTo(latLng, map) {
         var marker = new google.maps.Marker({
@@ -51,6 +58,34 @@ function initMap() {
             marker.setMap(null);
         }
     }
+    for (var i = 0; i < 40; i++) {
+        var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+        var latValue = 37.791350 + Math.random();
+        var lngValue = -122.435883 + Math.random();
+        var latLng = {lat: latValue, lng: lngValue}
+        var marker1 = new google.maps.Marker({
+            position: latLng,
+            icon: image
+
+        });
+        clustermarker.push(marker1);
+
+        var latValue = 37.791350 + Math.random();
+        var lngValue = -122.435883 + Math.random();
+        var latLng = {lat: latValue, lng: lngValue}
+        var marker2 = new google.maps.Marker({
+            position: latLng,
+            icon: 'restaurant.png'
+
+        });
+        clustermarker.push(marker2);
+
+
+    }
+    
+   console.log(clustermarker.length);
+    mc.addMarkers(clustermarker,true);
+
 
 
 }
