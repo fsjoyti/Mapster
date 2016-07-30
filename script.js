@@ -27,8 +27,9 @@ function initMap() {
 
     };
     map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
+    
 
-    var mcOptions = {gridSize: 50, maxZoom: 15, imagePath: 'm1.png'}
+    var mcOptions = {gridSize: 50, maxZoom: 15,   imagePath: 'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m'}
 
    var mc = new MarkerClusterer(map, [], mcOptions);
     map.addListener('click',function(e){
@@ -83,9 +84,36 @@ function initMap() {
 
     }
     
-   console.log(clustermarker.length);
+   
     mc.addMarkers(clustermarker,true);
+// adds a transit layer to the map
+    var transitLayer = new google.maps.TransitLayer();
+    transitLayer.setMap(map);
 
+    function setPano(element,options){
+        var panorama = new google.maps.StreetViewPanorama(element,options);
+        map.setStreetView(panorama);
+
+    }
+    
+
+    function setmultiplePano(selector,opts){
+        var elements = $(selector);
+        $.each(elements,function (key,element) {
+            setPano(element,opts);
+
+        });
+    }
+    
+
+
+    setPano(document.getElementById('pip-pano'),{
+        position:{
+            lat: 37.791350, lng: -122.435883
+
+        }
+    });
+    
 
 
 }
