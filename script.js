@@ -27,6 +27,7 @@ function initMap() {
 
     };
     map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
+    var geocoder = new google.maps.Geocoder();
     
 
     var mcOptions = {gridSize: 50, maxZoom: 15,   imagePath: 'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m'}
@@ -59,6 +60,7 @@ function initMap() {
             marker.setMap(null);
         }
     }
+    // generate markers at random locations and make clusters for overlapped markers
     for (var i = 0; i < 40; i++) {
         var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
         var latValue = 37.791350 + Math.random();
@@ -96,22 +98,49 @@ function initMap() {
 
     }
     
-
-    function setmultiplePano(selector,opts){
-        var elements = $(selector);
-        $.each(elements,function (key,element) {
-            setPano(element,opts);
-
-        });
-    }
     
-
 
     setPano(document.getElementById('pip-pano'),{
         position:{
             lat: 37.791350, lng: -122.435883
 
         }
+    });
+
+
+
+    function geocode(opts){
+        geocoder.geocode({
+            address:opts.address
+        },function(results,status){
+            if (status === google.maps.GeocoderStatus.OK){
+                
+                opts.success.call(this,results,status);
+
+            }
+            else{
+                opts.error.call(this,status);
+            }
+
+        });
+
+    }
+
+    geocode({
+        address:'Golden Gate Bridge,San Francisco,CA',
+        success:function (results) {
+            var result = results[0];
+            placeMarkerAndPanTo({
+                lat:result.geometry.location.lat(),
+                lng:result.geometry.location.lng()
+            },map);
+            
+        },
+        error:function (status) {
+            console.error(status);
+            
+        }
+
     });
     
 
